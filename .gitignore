@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+*.pyc
+*.err
+*.log
+.env
+.env.local
+venv/
+.next/
+.npm-cache/

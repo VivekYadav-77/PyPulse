@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+
+# No unnecessary packages - minimal attack surface.
+RUN useradd --create-home --shell /bin/bash runner
+
+# Switch to non-root user.
+USER runner
+WORKDIR /home/runner
+
+# No ENTRYPOINT - the command is passed at runtime.
