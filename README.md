@@ -60,7 +60,7 @@ Install these before running the project:
 Open two terminals from the project root:
 
 ```powershell
-cd "D:\Internshala Assignments\Helloji\pyrunner"
+cd "D:\pyrunner"
 ```
 
 ### 1. Backend
@@ -76,7 +76,7 @@ cd backend
 If you do not already have the virtual environment, create it first:
 
 ```powershell
-cd "D:\Internshala Assignments\Helloji\pyrunner"
+cd "D:\pyrunner"
 python -m venv venv
 .\venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 cd backend
@@ -94,7 +94,7 @@ http://localhost:8000
 In the second terminal:
 
 ```powershell
-cd "D:\Internshala Assignments\Helloji\pyrunner\frontend"
+cd "D:\frontend"
 npm.cmd install
 npm.cmd run dev
 ```
@@ -199,7 +199,7 @@ Docker mode is optional. The app works without Docker using the direct subproces
 To enable Docker mode, install and start Docker Desktop, then build the sandbox image:
 
 ```powershell
-cd "D:\Internshala Assignments\Helloji\pyrunner"
+cd "D:\pyrunner"
 docker build -t pypulse-sandbox -f docker\Dockerfile.runner .
 ```
 
@@ -237,7 +237,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 Install backend dependencies into the project virtual environment:
 
 ```powershell
-cd "D:\Internshala Assignments\Helloji\pyrunner\backend"
+cd "D:\folder"
 ..\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
@@ -260,3 +260,30 @@ npm.cmd run dev
 ## Production Notes
 
 For production, use a real secret key, set `DEBUG=False`, configure `ALLOWED_HOSTS`, run Django with a production server such as Gunicorn or Waitress, and use a reverse proxy instead of the development Next.js rewrite.
+
+
+## Security Risks Still Present
+
+Although the application includes execution timeout handling and optional Docker isolation, some security risks still exist:
+
+- User-submitted Python code is still arbitrary code execution and may attempt malicious operations.
+- High memory or CPU usage attacks may still affect server performance.
+- File system or environment access could become a risk if sandboxing is misconfigured.
+- Multiple simultaneous execution requests could lead to denial-of-service (DoS) issues.
+- The current implementation is designed as a prototype and is not fully hardened for untrusted public usage.
+
+## Production Scalability Plan
+
+If 500 students pressed "Run" at the same time, the current single-server architecture could become overloaded.
+
+For production-scale reliability, the system could be redesigned using:
+
+- Docker-based isolated execution containers for each code run
+- A distributed task queue such as Celery, Redis Queue, or RabbitMQ
+- Multiple worker servers dedicated only to code execution
+- Rate limiting and request throttling
+- Horizontal scaling with load balancers
+- Kubernetes or container orchestration for automatic scaling
+- Separation of frontend, API, and execution workers into independent services
+
+This would prevent the main API server from crashing under heavy concurrent usage.
