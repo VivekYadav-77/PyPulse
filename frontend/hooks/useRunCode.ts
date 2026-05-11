@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { isAxiosError } from "axios";
 import { runCode, type RunResponse } from "@/lib/api";
 
 export type RunStatus = "idle" | "running" | "success" | "error" | "timeout";
@@ -37,7 +38,12 @@ export function useRunCode() {
       });
     } catch (err: unknown) {
       const elapsed = Math.round(performance.now() - startTime);
-      const message = err instanceof Error ? err.message : "Unknown error occurred";
+      const message =
+        isAxiosError(err) && err.code === "ECONNABORTED"
+          ? "The backend is still waking up. Please try again in a few seconds."
+          : err instanceof Error
+            ? err.message
+            : "Unknown error occurred";
 
       setState({
         status: "error",
